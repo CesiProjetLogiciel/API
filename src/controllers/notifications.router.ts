@@ -3,8 +3,7 @@
  */
 
 import express, { Request, Response } from "express";
-import * as ItemService from "./items.service";
-import { BaseItem, Item } from "./item.interface";
+// TODO
 
 /**
  * Router Definition
@@ -20,37 +19,38 @@ export const notificationsRouter = express.Router();
 
 notificationsRouter.get("/", async (req: Request, res: Response) => {
     try {
-      const items: Item[] = await ItemService.findAll();
+        // TODO
+        const items = {test: ""}
   
-      res.status(200).send(items);
-    } catch (e) {
-      res.status(500).send(e.message);
+        res.status(200).send(items);
+    } catch (e: any) {
+        res.status(500).send(e.message);
     }
-  });
+});
 
 // POST items
 
 notificationsRouter.post("/", async (req: Request, res: Response) => {
     try {
-      const item: BaseItem = req.body;
+        // TODO
+        const newItem = {test: ""}
   
-      const newItem = await ItemService.create(item);
-  
-      res.status(201).json(newItem);
-    } catch (e) {
-      res.status(500).send(e.message);
+        res.status(201).json({result: "Created"});
+    } catch (e: any) {
+        res.status(500).send(e.message);
     }
-  });
+});
 
 // DELETE items/:id
 
 notificationsRouter.delete("/:id", async (req: Request, res: Response) => {
     try {
-      const id: number = parseInt(req.params.id, 10);
-      await ItemService.remove(id);
+        const id: number = parseInt(req.params.id, 10);
+        // TODO
+        //await ItemService.remove(id);
   
-      res.sendStatus(204);
-    } catch (e) {
-      res.status(500).send(e.message);
+        res.status(200).json({result: "Deleted"});
+    } catch (e: any) {
+        res.status(500).send(e.message);
     }
-  });
+});

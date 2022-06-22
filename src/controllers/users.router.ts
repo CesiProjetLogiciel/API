@@ -3,95 +3,79 @@
  */
 
 import express, { Request, Response } from "express";
-import * as ItemService from "./items.service";
-import { BaseItem, Item } from "./item.interface";
+
+import { paypalRouter } from "./paypal.router";
+import { addressesRouter } from "./addresses.router";
+import { billingsRouter } from "./billings.router";
+
+import { PutUser, User } from "../models/user.interface";
 
 /**
  * Router Definition
  */
 
 export const usersRouter = express.Router();
+usersRouter.use("/", paypalRouter);
+usersRouter.use("/", addressesRouter);
+usersRouter.use("/", billingsRouter);
 
 /**
  * Controller Definitions
  */
 
-// GET items
+// GET users/:user_id
 
-itemsRouter.get("/", async (req: Request, res: Response) => {
-    try {
-      const items: Item[] = await ItemService.findAll();
-  
-      res.status(200).send(items);
-    } catch (e) {
-      res.status(500).send(e.message);
-    }
-  });
-
-// GET items/:id
-
-itemsRouter.get("/:id", async (req: Request, res: Response) => {
+usersRouter.get("/:id", async (req: Request, res: Response) => {
     const id: number = parseInt(req.params.id, 10);
   
     try {
-      const item: Item = await ItemService.find(id);
-  
-      if (item) {
-        return res.status(200).send(item);
-      }
-  
-      res.status(404).send("item not found");
-    } catch (e) {
-      res.status(500).send(e.message);
+        // TODO
+        //const item: Item = await ItemService.find(id);
+
+        var user: User = {
+            id: 5,
+            first_name: "Paul",
+            last_name: "Boulanger",
+            email: "paul.boulanger@mail.com"
+        }
+
+        if (user) {
+            return res.status(200).send(user);
+        }
+
+        res.status(404).send("User not found");
+    } catch (e: any) {
+        res.status(500).send(e.message);
     }
-  });
+});
 
-// POST items
+// PUT users/:user_id
 
-itemsRouter.post("/", async (req: Request, res: Response) => {
-    try {
-      const item: BaseItem = req.body;
-  
-      const newItem = await ItemService.create(item);
-  
-      res.status(201).json(newItem);
-    } catch (e) {
-      res.status(500).send(e.message);
-    }
-  });
-
-// PUT items/:id
-
-itemsRouter.put("/:id", async (req: Request, res: Response) => {
+usersRouter.put("/:id", async (req: Request, res: Response) => {
     const id: number = parseInt(req.params.id, 10);
   
     try {
-      const itemUpdate: Item = req.body;
+        var user: PutUser = req.body;
   
-      const existingItem: Item = await ItemService.find(id);
-  
-      if (existingItem) {
-        const updatedItem = await ItemService.update(id, itemUpdate);
-        return res.status(200).json(updatedItem);
-      }
-  
-      const newItem = await ItemService.create(itemUpdate);
-  
-      res.status(201).json(newItem);
-    } catch (e) {
-      res.status(500).send(e.message);
+        // TODO
+        //const existingItem: Item = await ItemService.find(id);
+
+        res.status(200).json({result: "Updated"});
+    } catch (e: any) {
+        res.status(500).send(e.message);
     }
-  });
+});
 
-// DELETE items/:id
+// DELETE users/:user_id
 
-itemsRouter.delete("/:id", async (req: Request, res: Response) => {
+usersRouter.delete("/:id", async (req: Request, res: Response) => {
     try {
-      const id: number = parseInt(req.params.id, 10);
-      await ItemService.remove(id);
+        const id: number = parseInt(req.params.id, 10);
+        // TODO
+        //await ItemService.remove(id);
   
-      res.sendStatus(204);
-    } catch (e) {
-      res.status(500).send(e.message);
+        res.status(200).json({result: "Deleted"});
+    } catch (e: any) {
+        res.status(500).send(e.message);
     }
-  });
+});

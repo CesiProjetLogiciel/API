@@ -3,14 +3,20 @@
  */
 
 import express, { Request, Response } from "express";
-import * as ItemService from "./items.service";
-import { BaseItem, Item } from "./item.interface";
+
+import { productsRouter } from "./products.router";
+import { menusRouter } from "./menus.router";
+
+import { PagedList } from "../models/paged_list.interface";
+import { PostRestaurant, PutRestaurant, Restaurant } from "../models/restaurant.interface";
 
 /**
  * Router Definition
  */
 
 export const restaurantsRouter = express.Router();
+restaurantsRouter.use("/", productsRouter);
+restaurantsRouter.use("/", menusRouter);
 
 /**
  * Controller Definitions
@@ -20,13 +26,39 @@ export const restaurantsRouter = express.Router();
 
 restaurantsRouter.get("/", async (req: Request, res: Response) => {
     try {
-      const items: Item[] = await ItemService.findAll();
+        // TODO
+        //const items: Item[] = await ItemService.findAll();
+
+        var restaurants: PagedList<Restaurant> = {
+            data: [
+                {
+                    id: 6,
+                    name: "Burger & Co",
+                    description: "Restaurant de burgers",
+                    category: "Fast-food",
+                    image: "7aipvWGHHonRfNG2H/+vnWDUXeMEP87ObOJFfZFYbRR0TxaT3gV4L90BXZpy"
+                },
+                {
+                    id: 7,
+                    name: "Pizza Supreme",
+                    description: "Pizzeria de quartier",
+                    category: "Pizzas",
+                    image: "7aipvWGHHonRfNG2H/+vnWDUXeMEP87ObOJFfZFYbRR0TxaT3gV4L90BXZpy"
+                }
+            ],
+            page: 1,
+            total_pages: 2,
+            items_per_page: 2,
+            total_items: 3,
+            next: "/api/restaurants&page=2",
+            prev: ""
+        }
   
-      res.status(200).send(items);
-    } catch (e) {
-      res.status(500).send(e.message);
+        res.status(200).send(restaurants);
+    } catch (e: any) {
+        res.status(500).send(e.message);
     }
-  });
+});
 
 // GET items/:id
 
@@ -34,31 +66,41 @@ restaurantsRouter.get("/:id", async (req: Request, res: Response) => {
     const id: number = parseInt(req.params.id, 10);
   
     try {
-      const item: Item = await ItemService.find(id);
+        // TODO
+        //const item: Item = await ItemService.find(id);
+
+        var restaurant: Restaurant = {
+            id: 6,
+            name: "Burger & Co",
+            description: "Restaurant de burgers",
+            category: "Fast-food",
+            image: "7aipvWGHHonRfNG2H/+vnWDUXeMEP87ObOJFfZFYbRR0TxaT3gV4L90BXZpy"
+        }
   
-      if (item) {
-        return res.status(200).send(item);
-      }
+        if (restaurant) {
+            return res.status(200).send(restaurant);
+        }
   
-      res.status(404).send("item not found");
-    } catch (e) {
-      res.status(500).send(e.message);
+        res.status(404).send("Restaurant not found");
+    } catch (e: any) {
+        res.status(500).send(e.message);
     }
-  });
+});
 
 // POST items
 
 restaurantsRouter.post("/", async (req: Request, res: Response) => {
     try {
-      const item: BaseItem = req.body;
+        var restaurant: PostRestaurant = req.body;
   
-      const newItem = await ItemService.create(item);
+        // TODO
+        //const newItem = await ItemService.create(item);
   
-      res.status(201).json(newItem);
-    } catch (e) {
-      res.status(500).send(e.message);
+        res.status(201).json({result: "Created"});
+    } catch (e: any) {
+        res.status(500).send(e.message);
     }
-  });
+});
 
 // PUT items/:id
 
@@ -66,32 +108,50 @@ restaurantsRouter.put("/:id", async (req: Request, res: Response) => {
     const id: number = parseInt(req.params.id, 10);
   
     try {
-      const itemUpdate: Item = req.body;
-  
-      const existingItem: Item = await ItemService.find(id);
-  
-      if (existingItem) {
-        const updatedItem = await ItemService.update(id, itemUpdate);
-        return res.status(200).json(updatedItem);
-      }
-  
-      const newItem = await ItemService.create(itemUpdate);
-  
-      res.status(201).json(newItem);
-    } catch (e) {
-      res.status(500).send(e.message);
+        var restaurant: PutRestaurant = req.body;
+
+        // TODO
+        //const existingItem: Item = await ItemService.find(id);
+
+        res.status(200).json({result: "Updated"});
+    } catch (e: any) {
+        res.status(500).send(e.message);
     }
-  });
+});
 
 // DELETE items/:id
 
 restaurantsRouter.delete("/:id", async (req: Request, res: Response) => {
     try {
-      const id: number = parseInt(req.params.id, 10);
-      await ItemService.remove(id);
+        const id: number = parseInt(req.params.id, 10);
+        // TODO
+        //await ItemService.remove(id);
   
-      res.sendStatus(204);
-    } catch (e) {
-      res.status(500).send(e.message);
+        res.status(200).json({result: "Deleted"});
+    } catch (e: any) {
+        res.status(500).send(e.message);
     }
-  });
+ });
+
+ // GET Restaurant stats
+
+ restaurantsRouter.get("/:id/stats", async (req: Request, res: Response) => {
+    const id: number = parseInt(req.params.id, 10);
+  
+    try {
+        // TODO
+        //const item: Item = await ItemService.find(id);
+
+        var stats = {
+            stats: "todo"
+        }
+  
+        if (stats) {
+            return res.status(200).send(stats);
+        }
+  
+        res.status(404).send("Restaurant not found");
+    } catch (e: any) {
+        res.status(500).send(e.message);
+    }
+});

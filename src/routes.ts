@@ -4,9 +4,6 @@
 
 import express from "express";
 
-import { itemsRouter } from "./items/items.router";
-
-import { registerRouter } from "./controllers/register.router";
 import { oauthRouter } from "./controllers/oauth.router";
 import { usersRouter } from "./controllers/users.router";
 import { restaurantsRouter } from "./controllers/restaurants.router";
@@ -20,16 +17,13 @@ import { statsRouter } from "./controllers/stats.router";
  * Routes
  */
 
-export const routes = function(app: express.Express) {
-    app.use("/api/menu/items", itemsRouter);
-
-    app.use("/register", registerRouter);
-    app.use("/oauth", oauthRouter);
-    app.use("/users", usersRouter);
-    app.use("/restaurants", restaurantsRouter);
-    app.use("/orders", ordersRouter);
-    app.use("/deliveries", deliveriesRouter);
-    app.use("/notifications", notificationsRouter);
-    app.use("/logs", logsRouter);
-    app.use("/stats", statsRouter);
+export const routes = function(mainRouter: express.Router) {
+    mainRouter.use("/oauth", oauthRouter);
+    mainRouter.use("/users", usersRouter);
+    mainRouter.use("/restaurants", restaurantsRouter);
+    mainRouter.use("/orders", ordersRouter);
+    mainRouter.use("/deliveries", deliveriesRouter);
+    mainRouter.use("/notifications", notificationsRouter);
+    mainRouter.use("/logs", logsRouter);
+    mainRouter.use("/stats", statsRouter);
 };

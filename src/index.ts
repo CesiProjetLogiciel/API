@@ -43,7 +43,9 @@ app.use(cookieParser());
 app.use(log("tiny"));
 
 // Init routes
-routes(app);
+const mainRouter = express.Router();
+routes(mainRouter);
+app.use("/api", mainRouter)
 
 // Middlewares
 app.use(errorHandler);

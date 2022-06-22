@@ -3,8 +3,6 @@
  */
 
 import express, { Request, Response } from "express";
-import * as ItemService from "./items.service";
-import { BaseItem, Item } from "./item.interface";
 
 /**
  * Router Definition
@@ -20,20 +18,30 @@ export const statsRouter = express.Router();
 
 statsRouter.get("/sales", async (req: Request, res: Response) => {
     try {
-      const items: Item[] = await ItemService.findAll();
+        // TODO
+        //const items: Item[] = await ItemService.findAll();
+
+        var stats = {
+            stats: "todo"
+        }
   
-      res.status(200).send(items);
-    } catch (e) {
-      res.status(500).send(e.message);
+        res.status(200).send(stats);
+    } catch (e: any) {
+        res.status(500).send(e.message);
     }
 });
 
 statsRouter.get("/performance", async (req: Request, res: Response) => {
-  try {
-    const items: Item[] = await ItemService.findAll();
+    try {
+        // TODO
+        //const items: Item[] = await ItemService.findAll();
 
-    res.status(200).send(items);
-  } catch (e) {
-    res.status(500).send(e.message);
-  }
+        var stats = {
+            stats: "todo"
+        }
+
+        res.status(200).send(stats);
+    } catch (e: any) {
+        res.status(500).send(e.message);
+    }
 });
