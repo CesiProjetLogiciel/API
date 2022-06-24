@@ -3,6 +3,7 @@
  */
 
 import express, { Request, Response } from "express";
+import passport from "passport";
 
 import { PagedList } from "../models/paged_list.interface";
 import { BaseProduct, Product, PutProduct } from "../models/product.interface";

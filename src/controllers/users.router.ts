@@ -26,8 +26,9 @@ usersRouter.use("/", billingsRouter);
 // GET users/:user_id
 
 usersRouter.get("/:id", async (req: Request, res: Response) => {
+    //console.log(req.author_id);
     const id: number = parseInt(req.params.id, 10);
-  
+
     try {
         // TODO
         //const item: Item = await ItemService.find(id);

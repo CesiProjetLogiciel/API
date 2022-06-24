@@ -16,4 +16,13 @@ export interface TokenResponse {
     access_token: string;
     expires_in: number;
     refresh_token: string;
+    api_key?: string;
+}
+
+export interface Jwt {
+    jti: string,
+    sub: number,
+    iat: number,
+    exp: number,
+    type: string
 }

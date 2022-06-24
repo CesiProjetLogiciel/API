@@ -3,6 +3,9 @@
  */
 
 import express from "express";
+import passport from "passport";
+
+import { bearerMiddleware } from "./middlewares/oauth.middleware";
 
 import { oauthRouter } from "./controllers/oauth.router";
 import { usersRouter } from "./controllers/users.router";
@@ -19,6 +22,8 @@ import { statsRouter } from "./controllers/stats.router";
 
 export const routes = function(mainRouter: express.Router) {
     mainRouter.use("/oauth", oauthRouter);
+    mainRouter.use(bearerMiddleware);
+    // TODO middleware to check if user has access to resource
     mainRouter.use("/users", usersRouter);
     mainRouter.use("/restaurants", restaurantsRouter);
     mainRouter.use("/orders", ordersRouter);

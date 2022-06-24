@@ -8,6 +8,7 @@ import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import log from "morgan";
+import passport from "passport";
 
 import { routes } from "./routes";
 import { errorHandler } from "./middlewares/error.middleware";
@@ -35,6 +36,7 @@ const app = express();
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
+app.use(passport.initialize({userProperty:'author_id'}));
 
 // parse application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
@@ -45,7 +47,7 @@ app.use(log("tiny"));
 // Init routes
 const mainRouter = express.Router();
 routes(mainRouter);
-app.use("/api", mainRouter)
+app.use("/api", mainRouter);
 
 // Middlewares
 app.use(errorHandler);

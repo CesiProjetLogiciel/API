@@ -3,6 +3,7 @@
  */
 
 import express, { Request, Response } from "express";
+import passport from "passport";
 
 import { productsRouter } from "./products.router";
 import { menusRouter } from "./menus.router";

@@ -3,6 +3,7 @@
  */
 
 import express, { Request, Response } from "express";
+import passport from "passport";
 
 import { PagedList } from "../models/paged_list.interface";
 import { Address, BaseAddress, PutAddress } from "../models/address.interface";
@@ -19,90 +20,98 @@ export const addressesRouter = express.Router();
 
 // GET users/:user_id/addresses
 
-addressesRouter.get("/:id/addresses", async (req: Request, res: Response) => {
-    const id: number = parseInt(req.params.id, 10);
+addressesRouter.get("/:id/addresses",
+    passport.authenticate('bearer', { session: false }),
+    async (req: Request, res: Response) => {
+        const id: number = parseInt(req.params.id, 10);
 
-    try {
-        // TODO
-        //const items: Item[] = await ItemService.findAll();
+        try {
+            // TODO
+            //const items: Item[] = await ItemService.findAll();
 
-        var addresses: PagedList<Address> = {
-            data: [
-                {
-                    id: 1,
-                    user_id: 5,
-                    zipcode: "54000",
-                    city: "Nancy",
-                    address: "19 Avenue de la Forêt de Haye",
-                    state: "",
-                    additional_info: "Bâtiment Cesi",
-                    last_name: "Boulanger",
-                    first_name: "Paul",
-                    phone_number: "+33688156385",
-                    country: "France"
-                }
-            ],
-            page: 1,
-            total_pages: 2,
-            items_per_page: 1,
-            total_items: 2,
-            next: "/api/users/5/addresses&page=2",
-            prev: ""
+            var addresses: PagedList<Address> = {
+                data: [
+                    {
+                        id: 1,
+                        user_id: 5,
+                        zipcode: "54000",
+                        city: "Nancy",
+                        address: "19 Avenue de la Forêt de Haye",
+                        state: "",
+                        additional_info: "Bâtiment Cesi",
+                        last_name: "Boulanger",
+                        first_name: "Paul",
+                        phone_number: "+33688156385",
+                        country: "France"
+                    }
+                ],
+                page: 1,
+                total_pages: 2,
+                items_per_page: 1,
+                total_items: 2,
+                next: "/api/users/5/addresses&page=2",
+                prev: ""
+            }
+    
+            res.status(200).send(addresses);
+        } catch (e: any) {
+            res.status(500).send(e.message);
         }
-  
-        res.status(200).send(addresses);
-    } catch (e: any) {
-        res.status(500).send(e.message);
-    }
 });
 
 // POST users/:user_id/addresses
 
-addressesRouter.post("/:id/addresses", async (req: Request, res: Response) => {
-    const id: number = parseInt(req.params.id, 10);
+addressesRouter.post("/:id/addresses",
+    passport.authenticate('bearer', { session: false }),
+    async (req: Request, res: Response) => {
+        const id: number = parseInt(req.params.id, 10);
 
-    try {
-        var address: BaseAddress = req.body;
-  
-        // TODO
-        //const newItem = await ItemService.create(item);
-  
-        res.status(201).json({result: "Created"});
-    } catch (e: any) {
-        res.status(500).send(e.message);
-    }
+        try {
+            var address: BaseAddress = req.body;
+
+            // TODO
+            //const newItem = await ItemService.create(item);
+
+            res.status(201).json({result: "Created"});
+        } catch (e: any) {
+            res.status(500).send(e.message);
+        }
 });
 
 // PUT users/:user_id/addresses/:address_id
 
-addressesRouter.put("/:user_id/addresses/:address_id", async (req: Request, res: Response) => {
-    const user_id: number = parseInt(req.params.user_id, 10);
-    const address_id: number = parseInt(req.params.address_id, 10);
-  
-    try {
-        var address: PutAddress = req.body;
+addressesRouter.put("/:user_id/addresses/:address_id",
+    passport.authenticate('bearer', { session: false }),
+    async (req: Request, res: Response) => {
+        const user_id: number = parseInt(req.params.user_id, 10);
+        const address_id: number = parseInt(req.params.address_id, 10);
 
-        // TODO
-        //const existingItem: Item = await ItemService.find(id);
+        try {
+            var address: PutAddress = req.body;
 
-        res.status(200).json({result: "Updated"});
-    } catch (e: any) {
-        res.status(500).send(e.message);
-    }
+            // TODO
+            //const existingItem: Item = await ItemService.find(id);
+
+            res.status(200).json({result: "Updated"});
+        } catch (e: any) {
+            res.status(500).send(e.message);
+        }
 });
 
 // DELETE users/:user_id/addresses/:address_id
 
-addressesRouter.delete("/:user_id/addresses/:address_id", async (req: Request, res: Response) => {
-    const user_id: number = parseInt(req.params.user_id, 10);
-    const address_id: number = parseInt(req.params.address_id, 10);
+addressesRouter.delete("/:user_id/addresses/:address_id",
+    passport.authenticate('bearer', { session: false }),
+    async (req: Request, res: Response) => {
+        const user_id: number = parseInt(req.params.user_id, 10);
+        const address_id: number = parseInt(req.params.address_id, 10);
 
-    try {
-        // TODO
-        //await ItemService.remove(id);
-  
-        res.status(200).json({result: "Deleted"});
-    } catch (e: any) {
-        res.status(500).send(e.message);
-    }
+        try {
+            // TODO
+            //await ItemService.remove(id);
+
+            res.status(200).json({result: "Deleted"});
+        } catch (e: any) {
+            res.status(500).send(e.message);
+        }
  });
