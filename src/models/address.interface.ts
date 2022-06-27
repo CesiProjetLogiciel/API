@@ -1,3 +1,5 @@
+import joi from 'joi';
+
 export interface BaseAddress {
     zipcode: string;
     city: string;

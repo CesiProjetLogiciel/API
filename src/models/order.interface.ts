@@ -23,6 +23,10 @@ export interface BaseOrder extends BaseOrderDelivery {
     menu_ids: number[];
 }
 
+export interface PostOrder extends BaseOrder {
+    payment_token: string;
+}
+
 export interface Order extends BaseOrder, OrderUpdate {
     id: number;
 }

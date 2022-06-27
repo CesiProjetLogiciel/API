@@ -7,9 +7,11 @@ import jwt from "jsonwebtoken";
 
 import { apiKeyBearerMiddleware } from "../middlewares/oauth.middleware";
 
-import { Jwt } from "../models/oauth.interface";
+import { Jwt, RefreshTokenResponse, UserType } from "../models/oauth.interface";
 import { RegisterUser } from "../models/user.interface";
 import { Authentication, Refresh, TokenResponse } from "../models/oauth.interface";
+import * as UsersService from "../services/users.service";
+import * as LogsService from "../services/logs.service";
 
 /**
  * Router Definition
@@ -41,25 +43,30 @@ function generateRefreshToken(user_id: number) {
 
 oauthRouter.post("/register", apiKeyBearerMiddleware, async (req: Request, res: Response) => {
     try {
-        var user: RegisterUser = req.body;
+        var new_user: RegisterUser = req.body;
         
-        // TODO
-        //const newItem = await ItemService.create(item);
-        var user_id: number = 5;
+        // TODO check if user_type valid
+        // TODO check if referral code and give discount
+        // TODO send email verification
+
+        var serviceData: number = await UsersService.createUser(new_user);
+
         var token: TokenResponse = {
-            user_id: user_id,
-            access_token: generateAccessToken(user_id),
+            user_id: serviceData,
+            user_type: new_user.user_type,
+            access_token: generateAccessToken(serviceData),
             expires_in: 1800,
-            refresh_token: generateRefreshToken(user_id),
+            refresh_token: generateRefreshToken(serviceData),
         }
-        if (user.user_type == "THIRD_PARTY_DEV") {
+        if (new_user.user_type == UserType.THIRD_PARTY_DEV) {
             token.api_key = require('crypto').randomBytes(64).toString('hex');
             // TODO store in DB
         }
 
+        await LogsService.createConnectionLog(); // TODO
         res.status(201).json(token);
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });
 
@@ -68,15 +75,23 @@ oauthRouter.post("/token", apiKeyBearerMiddleware, async (req: Request, res: Res
         if (req.body.grant_type == "client_credentials") {
             var login_body: Authentication = req.body;
 
-            // TODO check email password
-            var user_id: number = 6;
+            var serviceData: number|false = await UsersService.checkCredentials(login_body.email, login_body.password);
+
+            if (serviceData === false) {
+                return res.status(401).json({result: "Unauthorized. Invalid credentials"});
+            }
+
+            var userData = await UsersService.readUser(serviceData);
 
             var token: TokenResponse = {
-                user_id: user_id,
-                access_token: generateAccessToken(user_id),
+                user_id: serviceData,
+                user_type: UserType.CLIENT, // TODO userData.type
+                access_token: generateAccessToken(serviceData),
                 expires_in: 1800,
-                refresh_token: generateRefreshToken(user_id)
+                refresh_token: generateRefreshToken(serviceData)
             };
+
+            await LogsService.createConnectionLog(); // TODO
             return res.status(200).json(token);
         }
         else if (req.body.grant_type == "refresh_token") {
@@ -87,13 +102,13 @@ oauthRouter.post("/token", apiKeyBearerMiddleware, async (req: Request, res: Res
                 }
                 if (err) {
                     console.log(err);
-                    return res.status(401).send({result: "Unauthorized. Invalid token"});
+                    return res.status(401).json({result: "Unauthorized. Invalid token"});
                 }
                 
                 var jwt_payload: Jwt = payload;
     
                 if (jwt_payload.exp > (Date.now()/1000) && jwt_payload.type == "refresh") {
-                    var token: TokenResponse = {
+                    var token: RefreshTokenResponse = {
                         user_id: jwt_payload.sub,
                         access_token: generateAccessToken(jwt_payload.sub),
                         expires_in: 1800,
@@ -102,14 +117,14 @@ oauthRouter.post("/token", apiKeyBearerMiddleware, async (req: Request, res: Res
                     return res.status(200).json(token);
                 }
                 else {
-                    return res.status(401).send({result: "Unauthorized. Invalid token"});
+                    return res.status(401).json({result: "Unauthorized. Invalid token"});
                 }
             });
         }
         else {
-            return res.status(401).send({result: "Unauthorized. Invalid token"});
+            return res.status(401).json({result: "Unauthorized. Invalid token"});
         }
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });

@@ -4,6 +4,8 @@
 
 import express, { Request, Response } from "express";
 
+import * as LogsService from "../services/logs.service";
+
 /**
  * Router Definition
  */
@@ -18,26 +20,26 @@ export const logsRouter = express.Router();
 
 logsRouter.get("/connections", async (req: Request, res: Response) => {
     try {
-        // TODO
+        var serviceData = await LogsService.readConnectionLog();
         var logs = {
-            logs: "test log"
+            data: serviceData
         }
   
-        res.status(200).send(logs);
+        res.status(200).json(logs);
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });
 
 logsRouter.get("/components", async (req: Request, res: Response) => {
     try {
-        // TODO
+        var serviceData = await LogsService.readComponentDownloadLog();
         var logs = {
-            logs: "test log"
+            data: serviceData
         }
 
-        res.status(200).send(logs);
+        res.status(200).json(logs);
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });

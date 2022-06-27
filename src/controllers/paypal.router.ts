@@ -5,6 +5,7 @@
  import express, { Request, Response } from "express";
 
  import { BasePaypal, UserPaypal } from "../models/paypal.interface";
+ import * as PaypalService from "../services/paypal.service";
 
  /**
  * Router Definition
@@ -22,21 +23,15 @@ paypalRouter.get("/:id/paypal", async (req: Request, res: Response) => {
     const id: number = parseInt(req.params.id, 10);
   
     try {
-        // TODO
-        //const item: Item = await ItemService.find(id);
+        var serviceData: UserPaypal|null = await PaypalService.readPaypal(id);
 
-        var paypal: UserPaypal = {
-            user_id: 5,
-            paypal: "restaurant@mail.com"
+        if (serviceData === null) {
+            return res.status(404).json({result: "User not found."});
         }
 
-        if (paypal) {
-            return res.status(200).send(paypal);
-        }
-
-        res.status(404).send("User not found");
+        return res.status(200).json(serviceData);
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });
 
@@ -48,12 +43,15 @@ paypalRouter.post("/:id/paypal", async (req: Request, res: Response) => {
     try {
         var paypal: BasePaypal = req.body;
   
-        // TODO
-        //const newItem = await ItemService.create(item);
+        var serviceData: true|null = await PaypalService.createPaypal(id, paypal);
+
+        if (serviceData === null) {
+            return res.status(404).json({result: "User not found."});
+        }
   
         res.status(201).json({result: "Created"});
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });
 
@@ -65,25 +63,32 @@ paypalRouter.put("/:id/paypal", async (req: Request, res: Response) => {
     try {
         var paypal: BasePaypal = req.body;
   
-        // TODO
-        //const existingItem: Item = await ItemService.find(id);
+        var serviceData: true|null = await PaypalService.updatePaypal(id, paypal);
+
+        if (serviceData === null) {
+            return res.status(404).json({result: "User not found."});
+        }
 
         res.status(200).json({result: "Updated"});
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });
 
 // DELETE users/:user_id/paypal
 
 paypalRouter.delete("/:id/paypal", async (req: Request, res: Response) => {
+    const id: number = parseInt(req.params.id, 10);
+
     try {
-        const id: number = parseInt(req.params.id, 10);
-        // TODO
-        //await ItemService.remove(id);
+        var serviceData: true|null = await PaypalService.deletePaypal(id);
+
+        if (serviceData === null) {
+            return res.status(404).json({result: "User not found."});
+        }
   
         res.status(200).json({result: "Deleted"});
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });

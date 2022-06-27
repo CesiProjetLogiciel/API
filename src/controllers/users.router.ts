@@ -9,6 +9,7 @@ import { addressesRouter } from "./addresses.router";
 import { billingsRouter } from "./billings.router";
 
 import { PutUser, User } from "../models/user.interface";
+import * as UsersService from "../services/users.service";
 
 /**
  * Router Definition
@@ -30,23 +31,15 @@ usersRouter.get("/:id", async (req: Request, res: Response) => {
     const id: number = parseInt(req.params.id, 10);
 
     try {
-        // TODO
-        //const item: Item = await ItemService.find(id);
+        var serviceData: User|null = await UsersService.readUser(id);
 
-        var user: User = {
-            id: 5,
-            first_name: "Paul",
-            last_name: "Boulanger",
-            email: "paul.boulanger@mail.com"
+        if (serviceData === null) {
+            return res.status(404).json({result: "User not found."});
         }
 
-        if (user) {
-            return res.status(200).send(user);
-        }
-
-        res.status(404).send("User not found");
+        res.status(200).json(serviceData);
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });
 
@@ -56,27 +49,34 @@ usersRouter.put("/:id", async (req: Request, res: Response) => {
     const id: number = parseInt(req.params.id, 10);
   
     try {
-        var user: PutUser = req.body;
+        var changes: PutUser = req.body;
   
-        // TODO
-        //const existingItem: Item = await ItemService.find(id);
+        var serviceData: true|null = await UsersService.updateUser(id, changes);
+
+        if (serviceData === null) {
+            return res.status(404).json({result: "User not found."});
+        }
 
         res.status(200).json({result: "Updated"});
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });
 
 // DELETE users/:user_id
 
 usersRouter.delete("/:id", async (req: Request, res: Response) => {
+    const id: number = parseInt(req.params.id, 10);
+    
     try {
-        const id: number = parseInt(req.params.id, 10);
-        // TODO
-        //await ItemService.remove(id);
+        var serviceData: true|null = await UsersService.deleteUser(id);
+
+        if (serviceData === null) {
+            return res.status(404).json({result: "User not found."});
+        }
   
         res.status(200).json({result: "Deleted"});
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });

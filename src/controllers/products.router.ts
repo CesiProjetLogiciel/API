@@ -7,6 +7,7 @@ import passport from "passport";
 
 import { PagedList } from "../models/paged_list.interface";
 import { BaseProduct, Product, PutProduct } from "../models/product.interface";
+import * as ProductsService from "../services/products.service";
 
 /**
  * Router Definition
@@ -24,39 +25,25 @@ productsRouter.get("/:id/products", async (req: Request, res: Response) => {
     const id: number = parseInt(req.params.id, 10);
 
     try {
-        // TODO
-        //const items: Item[] = await ItemService.findAll();
+        var serviceData: Array<Product>|null = await ProductsService.readProductList(id);
+
+        if (serviceData === null) {
+            return res.status(404).json({result: "Restaurant not found."});
+        }
 
         var products: PagedList<Product> = {
-            data: [
-                {
-                    id: 1,
-                    restaurant_id: 6,
-                    name: "Hamburger",
-                    description: "",
-                    price: 5.0,
-                    image: "7aipvWGHHonRfNG2H/+vnWDUXeMEP87ObOJFfZFYbRR0TxaT3gV4L90BXZpy"
-                },
-                {
-                    id: 2,
-                    restaurant_id: 6,
-                    name: "Cheeseburger",
-                    description: "",
-                    price: 5.5,
-                    image: "7aipvWGHHonRfNG2H/+vnWDUXeMEP87ObOJFfZFYbRR0TxaT3gV4L90BXZpy"
-                }
-            ],
+            data: serviceData,
             page: 1,
             total_pages: 2,
             items_per_page: 2,
             total_items: 3,
-            next: "/api/restaurants/6/products&page=2",
+            next: `/api/restaurants/${id}/products&page=2`,
             prev: ""
         }
   
-        res.status(200).send(products);
+        res.status(200).json(products);
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });
 
@@ -67,25 +54,15 @@ productsRouter.get("/:restaurant_id/products/:product_id", async (req: Request, 
     const product_id: number = parseInt(req.params.product_id, 10);
   
     try {
-        // TODO
-        //const item: Item = await ItemService.find(id);
+        var serviceData: Product|null = await ProductsService.readProduct(restaurant_id, product_id);
 
-        var product: Product = {
-            id: 2,
-            restaurant_id: 6,
-            name: "Cheeseburger",
-            description: "",
-            price: 5.5,
-            image: "7aipvWGHHonRfNG2H/+vnWDUXeMEP87ObOJFfZFYbRR0TxaT3gV4L90BXZpy"
+        if (serviceData === null) {
+            return res.status(404).json({result: "Restaurant or product not found."});
         }
   
-        if (product) {
-            return res.status(200).send(product);
-        }
-  
-        res.status(404).send("Product not found");
+        res.status(200).json(serviceData);
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });
 
@@ -97,12 +74,15 @@ productsRouter.post("/:id/products", async (req: Request, res: Response) => {
     try {
         var product: BaseProduct = req.body;
   
-        // TODO
-        //const newItem = await ItemService.create(item);
+        var serviceData: true|null = await ProductsService.createProduct(id, product);
+
+        if (serviceData === null) {
+            return res.status(404).json({result: "Restaurant not found."});
+        }
   
         res.status(201).json({result: "Created"});
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });
 
@@ -113,14 +93,17 @@ productsRouter.put("/:restaurant_id/products/:product_id", async (req: Request, 
     const product_id: number = parseInt(req.params.product_id, 10);
   
     try {
-        var product: PutProduct = req.body;
+        var changes: PutProduct = req.body;
 
-        // TODO
-        //const existingItem: Item = await ItemService.find(id);
+        var serviceData: true|null = await ProductsService.updateProduct(restaurant_id, product_id, changes);
+
+        if (serviceData === null) {
+            return res.status(404).json({result: "Restaurant or product not found."});
+        }
 
         res.status(200).json({result: "Updated"});
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });
 
@@ -131,11 +114,14 @@ productsRouter.delete("/:restaurant_id/products/:product_id", async (req: Reques
     const product_id: number = parseInt(req.params.product_id, 10);
 
     try {
-        // TODO
-        //await ItemService.remove(id);
+        var serviceData: true|null = await ProductsService.deleteProduct(restaurant_id, product_id);
+
+        if (serviceData === null) {
+            return res.status(404).json({result: "Restaurant or product not found."});
+        }
   
         res.status(200).json({result: "Deleted"});
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
  });

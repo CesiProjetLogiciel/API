@@ -6,6 +6,7 @@ import express, { Request, Response } from "express";
 
 import { PagedList } from "../models/paged_list.interface";
 import { Address, BaseAddress, PutAddress } from "../models/address.interface";
+import * as BillingsService from "../services/billings.service";
 
 /**
  * Router Definition
@@ -23,36 +24,25 @@ billingsRouter.get("/:id/billings", async (req: Request, res: Response) => {
     const id: number = parseInt(req.params.id, 10);
 
     try {
-        // TODO
-        //const items: Item[] = await ItemService.findAll();
+        var serviceData: Array<Address>|null = await BillingsService.readBilling(id);
+
+        if (serviceData === null) {
+            return res.status(404).json({result: "User not found."});
+        }
 
         var billings: PagedList<Address> = {
-            data: [
-                {
-                    id: 1,
-                    user_id: 5,
-                    zipcode: "54000",
-                    city: "Nancy",
-                    address: "19 Avenue de la Forêt de Haye",
-                    state: "",
-                    additional_info: "Bâtiment Cesi",
-                    last_name: "Boulanger",
-                    first_name: "Paul",
-                    phone_number: "+33688156385",
-                    country: "France"
-                }
-            ],
+            data: serviceData,
             page: 1,
             total_pages: 2,
             items_per_page: 1,
             total_items: 2,
-            next: "/api/users/5/billings&page=2",
+            next: `/api/users/${id}/billings&page=2`,
             prev: ""
         }
   
-        res.status(200).send(billings);
+        res.status(200).json(billings);
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });
 
@@ -62,14 +52,17 @@ billingsRouter.post("/:id/billings", async (req: Request, res: Response) => {
     const id: number = parseInt(req.params.id, 10);
 
     try {
-        var billings: BaseAddress = req.body;
+        var billing: BaseAddress = req.body;
   
-        // TODO
-        //const newItem = await ItemService.create(item);
+        var serviceData: true|null = await BillingsService.createBilling(id, billing);
+
+        if (serviceData === null) {
+            return res.status(404).json({result: "User not found."});
+        }
   
         res.status(201).json({result: "Created"});
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });
 
@@ -80,14 +73,17 @@ billingsRouter.put("/:user_id/billings/:billing_id", async (req: Request, res: R
     const billing_id: number = parseInt(req.params.billing_id, 10);
   
     try {
-        var billings: PutAddress = req.body;
+        var changes: PutAddress = req.body;
 
-        // TODO
-        //const existingItem: Item = await ItemService.find(id);
+        var serviceData: true|null = await BillingsService.updateBilling(user_id, billing_id, changes);
+
+        if (serviceData === null) {
+            return res.status(404).json({result: "User or address not found."});
+        }
 
         res.status(200).json({result: "Updated"});
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });
 
@@ -98,11 +94,14 @@ billingsRouter.delete("/:user_id/billings/:billing_id", async (req: Request, res
     const billing_id: number = parseInt(req.params.billing_id, 10);
 
     try {
-        // TODO
-        //await ItemService.remove(id);
+        var serviceData: true|null = await BillingsService.deleteBilling(user_id, billing_id);
+
+        if (serviceData === null) {
+            return res.status(404).json({result: "User or address not found."});
+        }
   
         res.status(200).json({result: "Deleted"});
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
  });

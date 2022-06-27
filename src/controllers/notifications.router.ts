@@ -3,6 +3,8 @@
  */
 
 import express, { Request, Response } from "express";
+
+import * as NotificationsService from "../services/notifications.service";
 // TODO
 
 /**
@@ -19,12 +21,15 @@ export const notificationsRouter = express.Router();
 
 notificationsRouter.get("/", async (req: Request, res: Response) => {
     try {
-        // TODO
-        const items = {test: ""}
+        var serviceData = await NotificationsService.readNotificationList();
+
+        var notifications = {
+            data: serviceData
+        }
   
-        res.status(200).send(items);
+        res.status(200).json(notifications);
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });
 
@@ -33,24 +38,29 @@ notificationsRouter.get("/", async (req: Request, res: Response) => {
 notificationsRouter.post("/", async (req: Request, res: Response) => {
     try {
         // TODO
-        const newItem = {test: ""}
+        var serviceData: true|null = await NotificationsService.createNotification();
   
         res.status(201).json({result: "Created"});
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });
 
 // DELETE items/:id
 
 notificationsRouter.delete("/:id", async (req: Request, res: Response) => {
+    const id: number = parseInt(req.params.id, 10);
+
     try {
-        const id: number = parseInt(req.params.id, 10);
         // TODO
-        //await ItemService.remove(id);
+        var serviceData: true|null = await NotificationsService.deleteNotification(id);
+
+        if (serviceData === null) {
+            return res.status(404).json({result: "Notification not found."});
+        }
   
         res.status(200).json({result: "Deleted"});
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });

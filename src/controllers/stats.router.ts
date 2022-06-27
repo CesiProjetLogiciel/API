@@ -3,7 +3,8 @@
  */
 
 import express, { Request, Response } from "express";
-import passport from "passport";
+
+import * as StatsService from "../services/stats.service";
 
 /**
  * Router Definition
@@ -20,29 +21,21 @@ export const statsRouter = express.Router();
 statsRouter.get("/sales", async (req: Request, res: Response) => {
     try {
         // TODO
-        //const items: Item[] = await ItemService.findAll();
-
-        var stats = {
-            stats: "todo"
-        }
+        var serviceData: any = await StatsService.readSalesStats();
   
-        res.status(200).send(stats);
+        res.status(200).json(serviceData);
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });
 
 statsRouter.get("/performance", async (req: Request, res: Response) => {
     try {
         // TODO
-        //const items: Item[] = await ItemService.findAll();
+        var serviceData: any = await StatsService.readPerformanceStats();
 
-        var stats = {
-            stats: "todo"
-        }
-
-        res.status(200).send(stats);
+        res.status(200).json(serviceData);
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });

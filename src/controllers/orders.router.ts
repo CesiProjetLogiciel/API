@@ -5,7 +5,8 @@
 import express, { Request, Response } from "express";
 
 import { PagedList } from "../models/paged_list.interface";
-import { BaseOrder, Order, OrderUpdate } from "../models/order.interface";
+import { Order, OrderUpdate, PostOrder } from "../models/order.interface";
+import * as OrdersService from "../services/orders.service";
 
 /**
  * Router Definition
@@ -21,23 +22,10 @@ export const ordersRouter = express.Router();
 
 ordersRouter.get("/", async (req: Request, res: Response) => {
     try {
-        // TODO
-        //const items: Item[] = await ItemService.findAll();
+        var serviceData: Array<Order> = await OrdersService.readOrderList();
 
         var list: PagedList<Order> = {
-            data: [
-                {
-                    id: 1,
-                    user_id: 5,
-                    delivery_address: "19 Avenue de la Forêt de Haye, 54000 Nancy",
-                    restaurant_id: 6,
-                    product_ids: [1, 2],
-                    menu_ids: [1],
-                    price: 7.0,
-                    deliveryman_id: 7,
-                    status: "DELIVERED"
-                }
-            ],
+            data: serviceData,
             page: 1,
             total_pages: 2,
             items_per_page: 1,
@@ -46,9 +34,9 @@ ordersRouter.get("/", async (req: Request, res: Response) => {
             prev: ""
         }
   
-        res.status(200).send(list);
+        res.status(200).json(list);
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });
 
@@ -58,27 +46,15 @@ ordersRouter.get("/:id", async (req: Request, res: Response) => {
     const id: number = parseInt(req.params.id, 10);
   
     try {
-        // TODO
+        var serviceData: Order|null = await OrdersService.readOrder(id);
 
-        var order: Order = {
-            id: 1,
-            user_id: 5,
-            delivery_address: "19 Avenue de la Forêt de Haye, 54000 Nancy",
-            restaurant_id: 6,
-            product_ids: [1, 2],
-            menu_ids: [1],
-            price: 7.0,
-            deliveryman_id: 7,
-            status: "DELIVERED"
+        if (serviceData === null) {
+            return res.status(404).json({result: "Order not found."});
         }
   
-        if (order) {
-            return res.status(200).send(order);
-        }
-  
-        res.status(404).send("item not found");
+        return res.status(200).json(serviceData);
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });
 
@@ -86,13 +62,19 @@ ordersRouter.get("/:id", async (req: Request, res: Response) => {
 
 ordersRouter.post("/", async (req: Request, res: Response) => {
     try {
-        var order: BaseOrder = req.body;
-        // TODO
-        // const newItem = await ItemService.create(item);
-  
-        res.status(201).json({result: "Created"});
+        var order: PostOrder = req.body;
+
+        if (await OrdersService.validatePayment(order.payment_token)) {
+            var serviceData: true|null = await OrdersService.createOrder(order);
+      
+            return res.status(201).json({result: "Created"});
+        }
+        else {
+            return res.status(403).json({result: "Forbidden. Payment could not be verified"});
+        }
+
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });
 
@@ -102,35 +84,16 @@ ordersRouter.put("/:id", async (req: Request, res: Response) => {
     const id: number = parseInt(req.params.id, 10);
   
     try {
-        var update: OrderUpdate = req.body;
+        var changes: OrderUpdate = req.body;
   
-        // TODO
-        //const existingItem: Item = await ItemService.find(id);
-  
-        // TODO
-        if (update) {
-            //const updatedItem = await ItemService.update(id, itemUpdate);
-            return res.status(200).json({result: "Updated"});
+        var serviceData: true|null = await OrdersService.updateOrder(id, changes);
+
+        if (serviceData === null) {
+            return res.status(404).json({result: "Order not found."});
         }
-        res.status(404).json({result: "Not found"});
-
-    } catch (e: any) {
-        res.status(500).send(e.message);
-    }
-});
-
-// POST Validate payment ??
-
-ordersRouter.post("/:id/payment", async (req: Request, res: Response) => {
-    const id: number = parseInt(req.params.id, 10);
-
-    try {
-        var order: BaseOrder = req.body;
-        // TODO
-        // const newItem = await ItemService.create(item);
   
-        res.status(201).json({result: "todo"});
+        return res.status(200).json({result: "Updated"});
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });

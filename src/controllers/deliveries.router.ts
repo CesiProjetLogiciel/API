@@ -6,6 +6,7 @@ import express, { Request, Response } from "express";
 
 import { PagedList } from "../models/paged_list.interface";
 import { Delivery } from "../models/order.interface";
+import * as DeliveriesService from "../services/deliveries.service";
 
 /**
  * Router Definition
@@ -21,21 +22,10 @@ export const deliveriesRouter = express.Router();
 
 deliveriesRouter.get("/", async (req: Request, res: Response) => {
     try {
-        // TODO
-        //const items: Item[] = await ItemService.findAll();
+        var serviceData: Array<Delivery> = await DeliveriesService.readDeliveryList();
 
-        var list: PagedList<Delivery> = {
-            data: [
-                {
-                    id: 1,
-                    user_id: 5,
-                    delivery_address: "19 Avenue de la Forêt de Haye, 54000 Nancy",
-                    restaurant_id: 6,
-                    restaurant_address: "14 rue du forgeron, 54000 Nancy",
-                    deliveryman_id: 7,
-                    status: "DELIVERED"
-                }
-            ],
+        var deliveries: PagedList<Delivery> = {
+            data: serviceData,
             page: 1,
             total_pages: 2,
             items_per_page: 1,
@@ -44,9 +34,9 @@ deliveriesRouter.get("/", async (req: Request, res: Response) => {
             prev: ""
         }
 
-        res.status(200).send(list);
+        res.status(200).json(deliveries);
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });
 
@@ -56,25 +46,14 @@ deliveriesRouter.get("/:id", async (req: Request, res: Response) => {
     const id: number = parseInt(req.params.id, 10);
   
     try {
-        // TODO
-        //const item: Item = await ItemService.find(id);
+        var serviceData: Delivery|null = await DeliveriesService.readDelivery(id);
 
-        var delivery: Delivery = {
-            id: 1,
-            user_id: 5,
-            delivery_address: "19 Avenue de la Forêt de Haye, 54000 Nancy",
-            restaurant_id: 6,
-            restaurant_address: "14 rue du forgeron, 54000 Nancy",
-            deliveryman_id: 7,
-            status: "DELIVERED"
+        if (serviceData === null) {
+            return res.status(404).json({result: "Delivery not found."});
         }
 
-        if (delivery) {
-            return res.status(200).send(delivery);
-        }
-  
-        res.status(404).send("Delivery not found");
+        return res.status(200).json(serviceData);
     } catch (e: any) {
-        res.status(500).send(e.message);
+        res.status(500).json(e.message);
     }
 });
