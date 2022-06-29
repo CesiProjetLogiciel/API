@@ -2,10 +2,10 @@ version: '3.8'
         
 services: 
     API:
-        image: microservices:API
+        image: node:16.15-slim
         build:
-            context: ./API
-        command: npm start  
+            context: ./
+        command: node ./src/index.js
         environment:
             - SERVER_PORT=3000
             - TOKEN_SECRET=oGG8cna6y0CX3ZFBr2dlidkSkW3Tx7kGyHPoskm3PcpqMzDStSjiLsy96UAp9EcpjsXnnkUbu608mgwcZRkd9G4XK29naH8ZqfOtrulpXRvY19rTR3l4Im9JviBtTSfr
@@ -27,7 +27,7 @@ services:
             - PAYMENT_SERVICE_PORT=10081
             - STATS_SERVICE_PORT=10082
         ports:
-            - 8081:8081
+            - 3000:3000
         deploy:
             restart_policy:
                 condition: always

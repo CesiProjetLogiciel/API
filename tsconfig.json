@@ -1,5 +1,13 @@
 {
+	"include": ["src/**/*.ts"],
+	"exclude": ["./node_modules"],
   "compilerOptions": {
+	"moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+	"noImplicitAny": false,
+    "allowJs": true,
+    "checkJs": false,
     /* Visit https://aka.ms/tsconfig to read more about this file */
 
     /* Projects */
