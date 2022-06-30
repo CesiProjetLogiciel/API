@@ -115,7 +115,7 @@ export const readOrder = async function (id: string): Promise<Order|null> {
         }
     }
     var deliveryman = await UsersService.readUser(response.data[0].DeliveryMan);
-    var order: Order = {
+    var order: any = {
         id: response.data[0]._id,
         user_id: response.data[0].Client,
         delivery_address: response.data[0].DeliveryAddress,

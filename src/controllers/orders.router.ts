@@ -69,8 +69,13 @@ ordersRouter.post("/", async (req: Request, res: Response) => {
         var order: PostOrder = req.body;
 
         if (await OrdersService.validatePayment(order.payment_token)) {
-            var restaurant_sql_id = (await RestaurantsService.readRestaurant(order.restaurant_id)).idSQL;
-            var serviceData: true|null = await OrdersService.createOrder(order, restaurant_sql_id);
+            var restaurant = (await RestaurantsService.readRestaurant(order.restaurant_id));
+            if (restaurant) {
+                var serviceData: true|null = await OrdersService.createOrder(order, restaurant.idSQL);
+            }
+            else {
+                return res.status(404).json({result: "Restaurant not found"});
+            }
       
             return res.status(201).json({result: "Created"});
         }
@@ -98,9 +103,9 @@ ordersRouter.put("/:id", async (req: Request, res: Response) => {
         }
         if (changes.status) {
             var order: Order|null = await OrdersService.readOrder(id);
-            var address: Address|null = await AddressesService.readAddressById(order?.delivery_address);
             if (order) {
-                var message: string = `Your order is now ${OrderStatus[order.status]}`;
+                var address: Address|null = await AddressesService.readAddressById(order.delivery_address);
+                var message: string = `Your order is now ${OrderStatus[order.status ? order.status : 1]}`;
                 if (changes.status == OrderStatus.IN_DELIVERY) {
                     message += ` by ${order.deliveryman_lastname} ${order.deliveryman_firstname}`;
                 }
