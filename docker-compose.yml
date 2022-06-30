@@ -8,9 +8,9 @@ services:
         command: node ./src/index.js
         environment:
             - SERVER_PORT=3000
-            - TOKEN_SECRET=oGG8cna6y0CX3ZFBr2dlidkSkW3Tx7kGyHPoskm3PcpqMzDStSjiLsy96UAp9EcpjsXnnkUbu608mgwcZRkd9G4XK29naH8ZqfOtrulpXRvY19rTR3l4Im9JviBtTSfr
-            - WEB_API_KEY=b3gNXR69u3TDCRRZejp9WgIVINlBL1QAl7AUDx36psfycoM2WUxt0QTf3plWIk2Ht6LCaeibmb8UoQEz6E6SdbtzMhc8MO0m8KDb2oHF1hamdgsgUBU4nrBmI9jCuqjs
-            - SERVICES_URL=http://192.168.149.146
+            - TOKEN_SECRET=
+            - WEB_API_KEY=
+            - SERVICES_URL=
             - ADDRESS_SERVICE_PORT=8083
             - BILLING_SERVICE_PORT=8084
             - COUNTRY_SERVICE_PORT=8085
