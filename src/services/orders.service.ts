@@ -84,8 +84,8 @@ export const readOrderList = async function (): Promise<Array<Order>> {
             products: products,
             price: order.Price,
             deliveryman_id: order.DeliveryMan,
-            deliveryman_firstname: deliveryman?.first_name,
-            deliveryman_lastname: deliveryman?.last_name,
+            deliveryman_firstname: deliveryman ? deliveryman.first_name : "",
+            deliveryman_lastname: deliveryman ? deliveryman.last_name : "",
             status: order.Status
         }
     }
@@ -124,8 +124,8 @@ export const readOrder = async function (id: string): Promise<Order|null> {
         products: await Promise.all(response.data[0].Products.map(getProduct)),
         price: response.data[0].Price,
         deliveryman_id: response.data[0].DeliveryMan,
-        deliveryman_firstname: deliveryman?.first_name,
-        deliveryman_lastname: deliveryman?.last_name,
+        deliveryman_firstname: deliveryman ? deliveryman.first_name : "",
+        deliveryman_lastname: deliveryman ? deliveryman.last_name : "",
         status: response.data[0].Status
     }
 
