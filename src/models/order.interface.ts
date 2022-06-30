@@ -4,7 +4,7 @@
 
 export interface OrderUpdate {
     deliveryman_id?: number;
-    status?: string;
+    status?: number;
 }
 
 /**
@@ -15,7 +15,9 @@ export interface BaseOrderDelivery {
     user_id: number;
     delivery_address: number;
     billing_address: number;
-    restaurant_id: number;
+    restaurant_id: string;
+    deliveryman_firstname?: string;
+    deliveryman_lastname?: string;
 }
 
 export interface BaseOrder extends BaseOrderDelivery {
