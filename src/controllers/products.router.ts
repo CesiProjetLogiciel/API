@@ -8,6 +8,7 @@ import passport from "passport";
 import { PagedList } from "../models/paged_list.interface";
 import { BaseProduct, Product, PutProduct } from "../models/product.interface";
 import * as ProductsService from "../services/products.service";
+import axios from "axios";
 
 /**
  * Router Definition
@@ -22,6 +23,14 @@ export const productsRouter = express.Router();
 // GET :restaurant_id/products
 
 productsRouter.get("/:id/products", async (req: Request, res: Response) => {
+    if (!Number.isNaN(Number(req.params.id))){
+        var response = await axios({
+            method: "get",
+            url: `${process.env.SERVICES_URL}:${process.env.RESTAURANT_SERVICE_PORT}/restaurants/${req.params.id}`
+        });
+        req.params.id = response.data.idSQL
+    }
+
     const id: string = req.params.id;
 
     try {

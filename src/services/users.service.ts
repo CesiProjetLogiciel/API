@@ -34,6 +34,9 @@ export const createUser = async function (user: RegisterUser): Promise<number> {
 }
 
 export const readUser = async function (id: number): Promise<User|null> {
+    if (id == null) {
+        return null;
+    }
     var response = await axios({
         method: "get",
         url: `${process.env.SERVICES_URL}:${process.env.USER_SERVICE_PORT}/users/${id}`

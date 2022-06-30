@@ -8,6 +8,8 @@ import { Order, OrderUpdate, PostOrder } from "../models/order.interface";
 import * as ProductsService from "../services/products.service";
 import * as MenusService from "../services/menus.service";
 import * as UsersService from "../services/users.service";
+import * as RestaurantsService from "./restaurants.service";
+import {Restaurant} from "../models/restaurant.interface";
 
 /**
 * Service Methods
@@ -38,11 +40,8 @@ export const readOrderList = async function (): Promise<Array<Order>> {
         method: "get",
         url: `${process.env.SERVICES_URL}:${process.env.ORDER_SERVICE_PORT}/orders`
     });
-    console.log(response.data)
     var getOrders = async function (order: any) {  
         const restaurant_id = order.Restaurant.ObjectId;
-        console.log("ORDER")
-        console.log(order.Products)
         var products: Array<any> = await Promise.all( order.Products.map(
             async function (product_id: string) {
                 var product: any = await ProductsService.readProduct(restaurant_id, product_id);
@@ -74,18 +73,19 @@ export const readOrderList = async function (): Promise<Array<Order>> {
             }
         ) );
         var deliveryman = await UsersService.readUser(order.DeliveryMan);
-        console.log(deliveryman)
+        var restaurant = await RestaurantsService.readRestaurant(order.Restaurant.ObjectId);
         return {
             id: order._id,
             user_id: order.Client,
             delivery_address: order.DeliveryAddress,
             billing_address: order.BillingAddress,
             restaurant_id: order.Restaurant.ObjectId,
+            restaurant_idSQL: (restaurant as Restaurant).idSQL,
             products: products,
             price: order.Price,
             deliveryman_id: order.DeliveryMan,
-            deliveryman_firstname: deliveryman?.first_name,
-            deliveryman_lastname: deliveryman?.last_name,
+            deliveryman_firstname: deliveryman ? deliveryman.first_name : "",
+            deliveryman_lastname: deliveryman ? deliveryman.last_name : "",
             status: order.Status
         }
     }
@@ -124,8 +124,8 @@ export const readOrder = async function (id: string): Promise<Order|null> {
         products: await Promise.all(response.data[0].Products.map(getProduct)),
         price: response.data[0].Price,
         deliveryman_id: response.data[0].DeliveryMan,
-        deliveryman_firstname: deliveryman?.first_name,
-        deliveryman_lastname: deliveryman?.last_name,
+        deliveryman_firstname: deliveryman ? deliveryman.first_name : "",
+        deliveryman_lastname: deliveryman ? deliveryman.last_name : "",
         status: response.data[0].Status
     }
 

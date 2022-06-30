@@ -48,6 +48,9 @@ export const readRestaurantList = async function (): Promise<Array<Restaurant>> 
 }
 
 export const readRestaurant = async function (id: string): Promise<Restaurant|null> {
+    if (id == null) {
+        return null;
+    }
     var response = await axios({
         method: "get",
         url: `${process.env.SERVICES_URL}:${process.env.RESTAURANT_SERVICE_PORT}/restaurants/${id}`
@@ -64,9 +67,9 @@ export const readRestaurant = async function (id: string): Promise<Restaurant|nu
         image: response.data[0].Image ? response.data[0].Image : ""
     }
 
-    // if (!id) {
-    //     return null;
-    // }
+    if (!response.data) {
+        return null;
+    }
     return restaurant;
 }
 
