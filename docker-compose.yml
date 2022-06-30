@@ -1,0 +1,33 @@
+version: '3.8'
+        
+services: 
+    API:
+        image: node:16.15-slim
+        build:
+            context: ./
+        command: node ./src/index.js
+        environment:
+            - SERVER_PORT=3000
+            - TOKEN_SECRET=oGG8cna6y0CX3ZFBr2dlidkSkW3Tx7kGyHPoskm3PcpqMzDStSjiLsy96UAp9EcpjsXnnkUbu608mgwcZRkd9G4XK29naH8ZqfOtrulpXRvY19rTR3l4Im9JviBtTSfr
+            - WEB_API_KEY=b3gNXR69u3TDCRRZejp9WgIVINlBL1QAl7AUDx36psfycoM2WUxt0QTf3plWIk2Ht6LCaeibmb8UoQEz6E6SdbtzMhc8MO0m8KDb2oHF1hamdgsgUBU4nrBmI9jCuqjs
+            - SERVICES_URL=http://192.168.43.146
+            - ADDRESS_SERVICE_PORT=8083
+            - BILLING_SERVICE_PORT=8084
+            - COUNTRY_SERVICE_PORT=8085
+            - PAYPAL_SERVICE_PORT=8082
+            - USER_SERVICE_PORT=8081
+            - USERTYPE_SERVICE_PORT=8086
+            - RESTAURANT_SERVICE_PORT=9081
+            - PRODUCT_SERVICE_PORT=9082
+            - MENU_SERVICE_PORT=9083
+            - ORDER_SERVICE_PORT=9084
+            - DELIVERY_SERVICE_PORT=9085
+            - NOTIFICATION_SERVICE_PORT=9086
+            - LOG_SERVICE_PORT=9087
+            - PAYMENT_SERVICE_PORT=10081
+            - STATS_SERVICE_PORT=10082
+        ports:
+            - 3000:3000
+        deploy:
+            restart_policy:
+                condition: always
