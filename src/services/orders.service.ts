@@ -8,6 +8,8 @@ import { Order, OrderUpdate, PostOrder } from "../models/order.interface";
 import * as ProductsService from "../services/products.service";
 import * as MenusService from "../services/menus.service";
 import * as UsersService from "../services/users.service";
+import * as RestaurantsService from "./restaurants.service";
+import {Restaurant} from "../models/restaurant.interface";
 
 /**
 * Service Methods
@@ -71,12 +73,14 @@ export const readOrderList = async function (): Promise<Array<Order>> {
             }
         ) );
         var deliveryman = await UsersService.readUser(order.DeliveryMan);
+        var restaurant = await RestaurantsService.readRestaurant(order.Restaurant.ObjectId);
         return {
             id: order._id,
             user_id: order.Client,
             delivery_address: order.DeliveryAddress,
             billing_address: order.BillingAddress,
             restaurant_id: order.Restaurant.ObjectId,
+            restaurant_idSQL: (restaurant as Restaurant).idSQL,
             products: products,
             price: order.Price,
             deliveryman_id: order.DeliveryMan,

@@ -29,7 +29,7 @@ export const createProduct = async function (restaurant_id: string, product: Bas
     return true;
 }
 
-export const readProductList = async function (restaurant_id: string): Promise<Array<Product>|null> {
+export const readProductList = async function (restaurant_id: any): Promise<Array<Product>|null> {
     var response = await axios({
         method: "get",
         url: `${process.env.SERVICES_URL}:${process.env.PRODUCT_SERVICE_PORT}/restaurants/${restaurant_id}/products`
