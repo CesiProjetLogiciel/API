@@ -21,9 +21,15 @@ export const logsRouter = express.Router();
 logsRouter.get("/connections", async (req: Request, res: Response) => {
     try {
         var serviceData = await LogsService.readConnectionLog();
-        var logs = {
-            data: serviceData
+        var logs: any = {
+            data: []
         }
+        serviceData.forEach(function(entry: any) {
+            logs.data.push({
+                log: entry.Logs,
+                type: entry.Type
+            })
+        })
   
         res.status(200).json(logs);
     } catch (e: any) {
@@ -34,9 +40,15 @@ logsRouter.get("/connections", async (req: Request, res: Response) => {
 logsRouter.get("/components", async (req: Request, res: Response) => {
     try {
         var serviceData = await LogsService.readComponentDownloadLog();
-        var logs = {
-            data: serviceData
+        var logs: any = {
+            data: []
         }
+        serviceData.forEach(function(entry: any) {
+            logs.data.push({
+                log: entry.Logs,
+                type: entry.Type
+            })
+        })
 
         res.status(200).json(logs);
     } catch (e: any) {

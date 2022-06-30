@@ -21,7 +21,7 @@ export const menusRouter = express.Router();
 // GET :restaurant_id/menus
 
 menusRouter.get("/:id/menus", async (req: Request, res: Response) => {
-    const id: number = parseInt(req.params.id, 10);
+    const id: string = req.params.id;
 
     try {
         var serviceData: Array<Menu>|null =  await MenusService.readMenuList(id);
@@ -49,8 +49,8 @@ menusRouter.get("/:id/menus", async (req: Request, res: Response) => {
 // GET :restaurant_id/menus/:menu_id
 
 menusRouter.get("/:restaurant_id/menus/:menu_id", async (req: Request, res: Response) => {
-    const restaurant_id: number = parseInt(req.params.restaurant_id, 10);
-    const menu_id: number = parseInt(req.params.menu_id, 10);
+    const restaurant_id: string = req.params.restaurant_id;
+    const menu_id: string = req.params.menu_id;
   
     try {
         var serviceData: Menu|null = await MenusService.readMenu(restaurant_id, menu_id);
@@ -68,7 +68,7 @@ menusRouter.get("/:restaurant_id/menus/:menu_id", async (req: Request, res: Resp
 // POST :restaurant_id/menus
 
 menusRouter.post("/:id/menus", async (req: Request, res: Response) => {
-    const id: number = parseInt(req.params.id, 10);
+    const id: string = req.params.id;
 
     try {
         var menu: PostMenu = req.body;
@@ -88,8 +88,8 @@ menusRouter.post("/:id/menus", async (req: Request, res: Response) => {
 // PUT :restaurant_id/menus/:menu_id
 
 menusRouter.put("/:restaurant_id/menus/:menu_id", async (req: Request, res: Response) => {
-    const restaurant_id: number = parseInt(req.params.restaurant_id, 10);
-    const menu_id: number = parseInt(req.params.menu_id, 10);
+    const restaurant_id: string = req.params.restaurant_id;
+    const menu_id: string = req.params.menu_id;
   
     try {
         var changes: PutMenu = req.body;
@@ -106,11 +106,11 @@ menusRouter.put("/:restaurant_id/menus/:menu_id", async (req: Request, res: Resp
     }
 });
 
-// DELETE :restaurant_id/products/:menu_id
+// DELETE :restaurant_id/menus/:menu_id
 
-menusRouter.delete("/:restaurant_id/products/:menu_id", async (req: Request, res: Response) => {
-    const restaurant_id: number = parseInt(req.params.restaurant_id, 10);
-    const menu_id: number = parseInt(req.params.menu_id, 10);
+menusRouter.delete("/:restaurant_id/menus/:menu_id", async (req: Request, res: Response) => {
+    const restaurant_id: string = req.params.restaurant_id;
+    const menu_id: string = req.params.menu_id;
 
     try {
         var serviceData: true|null = await MenusService.deleteMenu(restaurant_id, menu_id);
@@ -128,11 +128,11 @@ menusRouter.delete("/:restaurant_id/products/:menu_id", async (req: Request, res
  // POST :restaurant_id/menus/:menu_id/products
 
  menusRouter.post("/:restaurant_id/menus/:menu_id/products", async (req: Request, res: Response) => {
-    const restaurant_id: number = parseInt(req.params.restaurant_id, 10);
-    const menu_id: number = parseInt(req.params.menu_id, 10);
+    const restaurant_id: string = req.params.restaurant_id;
+    const menu_id: string = req.params.menu_id;
 
     try {
-        var product_id: number = req.body.product_id;
+        var product_id: string = req.body.product_id;
   
         var serviceData: true|null = await MenusService.addMenuProduct(restaurant_id, menu_id, product_id);
 
@@ -149,9 +149,9 @@ menusRouter.delete("/:restaurant_id/products/:menu_id", async (req: Request, res
 // DELETE :restaurant_id/menus/:menu_id/products/:product_id
 
 menusRouter.delete("/:restaurant_id/menus/:menu_id/products/:product_id", async (req: Request, res: Response) => {
-    const restaurant_id: number = parseInt(req.params.restaurant_id, 10);
-    const menu_id: number = parseInt(req.params.menu_id, 10);
-    const product_id: number = parseInt(req.params.product_id, 10);
+    const restaurant_id: string = req.params.restaurant_id;
+    const menu_id: string = req.params.menu_id;
+    const product_id: string = req.params.product_id;
 
     try {
         var serviceData: true|null = await MenusService.deleteMenuProduct(restaurant_id, menu_id, product_id);

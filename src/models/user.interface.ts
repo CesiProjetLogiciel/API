@@ -12,6 +12,7 @@ export interface RegisterUser extends BaseUser {
 
 export interface User extends BaseUser {
     id: number;
+    type: string;
 }
 
 export interface PutUser {

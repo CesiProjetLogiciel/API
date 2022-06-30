@@ -41,8 +41,9 @@ paypalRouter.post("/:id/paypal", async (req: Request, res: Response) => {
     const id: number = parseInt(req.params.id, 10);
 
     try {
-        var paypal: BasePaypal = req.body;
-  
+        var paypal: BasePaypal = {
+            paypal: req.body.paypal_address
+        };
         var serviceData: true|null = await PaypalService.createPaypal(id, paypal);
 
         if (serviceData === null) {
@@ -61,7 +62,9 @@ paypalRouter.put("/:id/paypal", async (req: Request, res: Response) => {
     const id: number = parseInt(req.params.id, 10);
   
     try {
-        var paypal: BasePaypal = req.body;
+        var paypal: BasePaypal = {
+            paypal: req.body.paypal_address
+        };
   
         var serviceData: true|null = await PaypalService.updatePaypal(id, paypal);
 

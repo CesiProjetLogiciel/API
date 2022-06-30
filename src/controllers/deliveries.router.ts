@@ -43,7 +43,7 @@ deliveriesRouter.get("/", async (req: Request, res: Response) => {
 // GET deliveries/:id
 
 deliveriesRouter.get("/:id", async (req: Request, res: Response) => {
-    const id: number = parseInt(req.params.id, 10);
+    const id: string = req.params.id;
   
     try {
         var serviceData: Delivery|null = await DeliveriesService.readDelivery(id);

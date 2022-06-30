@@ -5,8 +5,12 @@
 import express, { Request, Response } from "express";
 
 import { PagedList } from "../models/paged_list.interface";
-import { Order, OrderUpdate, PostOrder } from "../models/order.interface";
+import { Order, OrderStatus, OrderUpdate, PostOrder } from "../models/order.interface";
 import * as OrdersService from "../services/orders.service";
+import * as RestaurantsService from "../services/restaurants.service";
+import * as NotificationsService from "../services/notifications.service";
+import * as AddressesService from "../services/addresses.service";
+import { Address } from "../models/address.interface";
 
 /**
  * Router Definition
@@ -43,7 +47,7 @@ ordersRouter.get("/", async (req: Request, res: Response) => {
 // GET items/:id
 
 ordersRouter.get("/:id", async (req: Request, res: Response) => {
-    const id: number = parseInt(req.params.id, 10);
+    const id: string = req.params.id;
   
     try {
         var serviceData: Order|null = await OrdersService.readOrder(id);
@@ -65,7 +69,8 @@ ordersRouter.post("/", async (req: Request, res: Response) => {
         var order: PostOrder = req.body;
 
         if (await OrdersService.validatePayment(order.payment_token)) {
-            var serviceData: true|null = await OrdersService.createOrder(order);
+            var restaurant_sql_id = (await RestaurantsService.readRestaurant(order.restaurant_id)).idSQL;
+            var serviceData: true|null = await OrdersService.createOrder(order, restaurant_sql_id);
       
             return res.status(201).json({result: "Created"});
         }
@@ -81,7 +86,7 @@ ordersRouter.post("/", async (req: Request, res: Response) => {
 // PUT items/:id
 
 ordersRouter.put("/:id", async (req: Request, res: Response) => {
-    const id: number = parseInt(req.params.id, 10);
+    const id: string = req.params.id;
   
     try {
         var changes: OrderUpdate = req.body;
@@ -90,6 +95,23 @@ ordersRouter.put("/:id", async (req: Request, res: Response) => {
 
         if (serviceData === null) {
             return res.status(404).json({result: "Order not found."});
+        }
+        if (changes.status) {
+            var order: Order|null = await OrdersService.readOrder(id);
+            var address: Address|null = await AddressesService.readAddressById(order?.delivery_address);
+            if (order) {
+                var message: string = `Your order is now ${OrderStatus[order.status]}`;
+                if (changes.status == OrderStatus.IN_DELIVERY) {
+                    message += ` by ${order.deliveryman_lastname} ${order.deliveryman_firstname}`;
+                }
+                var notifResponse = await NotificationsService.createNotificationUser(address.phone_number, 
+                    message   
+                )
+                if (notifResponse == null) {
+                    return res.status(500).json({result: "Failed to send user notification"})
+                }
+
+            }
         }
   
         return res.status(200).json({result: "Updated"});

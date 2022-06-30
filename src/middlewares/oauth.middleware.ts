@@ -17,7 +17,7 @@ export const apiKeyBearerMiddleware = (
             return;
         }
     }
-    response.status(401).send({result: "Unauthorized"});
+    response.status(403).send({result: "Forbidden"});
 };
 
 passport.use(new Strategy(
@@ -52,6 +52,7 @@ export const bearerMiddleware = (
         if (err) {
             return response.status(401).send({result: "Unauthorized. Invalid token"}).end();
         }
+        request.author_id = user;
         next();
     })(request, response, next);
 };

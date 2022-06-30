@@ -6,11 +6,11 @@ export interface BaseProduct {
 }
 
 export interface RestaurantProduct extends BaseProduct {
-    restaurant_id: number;
+    restaurant_id: string;
 }
 
 export interface Product extends RestaurantProduct {
-    id: number;
+    id: string;
 }
 
 export interface BaseMenuProduct {
@@ -19,7 +19,7 @@ export interface BaseMenuProduct {
 }
 
 export interface MenuProduct extends BaseMenuProduct {
-    id: number;
+    id: string;
 }
 
 export interface PutProduct {

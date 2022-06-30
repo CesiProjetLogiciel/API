@@ -7,14 +7,14 @@ export interface BaseMenu {
 }
 
 export interface Menu extends BaseMenu {
-    id: number;
-    restaurant_id: number;
+    id: string;
+    restaurant_id: string;
     products: MenuProduct[];
 }
 
 
 export interface PostMenu extends BaseMenu {
-    product_ids: number[];
+    product_ids: string[];
 }
 
 export interface PutMenu {

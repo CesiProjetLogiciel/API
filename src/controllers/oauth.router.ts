@@ -2,7 +2,7 @@
  * Required External Modules and Interfaces
  */
 
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
 import { apiKeyBearerMiddleware } from "../middlewares/oauth.middleware";
@@ -25,7 +25,9 @@ function generateAccessToken(user_id: number) {
         sub: user_id,
         type: "access"
     }
-    return jwt.sign(payload, process.env.TOKEN_SECRET as string, { expiresIn: '1800s' });
+    //TODO
+    return jwt.sign(payload, process.env.TOKEN_SECRET as string, { expiresIn: '604800s' }); // 30 min
+    return jwt.sign(payload, process.env.TOKEN_SECRET as string, { expiresIn: '1800s' }); // 30 min
 }
 
 function generateRefreshToken(user_id: number) {
@@ -34,7 +36,7 @@ function generateRefreshToken(user_id: number) {
         sub: user_id,
         type: "refresh"
     }
-    return jwt.sign(payload, process.env.TOKEN_SECRET as string, { expiresIn: '604800s' });
+    return jwt.sign(payload, process.env.TOKEN_SECRET as string, { expiresIn: '604800s' }); // 7 days
 }
 
 /**
@@ -63,7 +65,7 @@ oauthRouter.post("/register", apiKeyBearerMiddleware, async (req: Request, res: 
             // TODO store in DB
         }
 
-        await LogsService.createConnectionLog(); // TODO
+        await LogsService.createConnectionLog(serviceData); // TODO
         res.status(201).json(token);
     } catch (e: any) {
         res.status(500).json(e.message);
@@ -76,6 +78,7 @@ oauthRouter.post("/token", apiKeyBearerMiddleware, async (req: Request, res: Res
             var login_body: Authentication = req.body;
 
             var serviceData: number|false = await UsersService.checkCredentials(login_body.email, login_body.password);
+            console.log(serviceData)
 
             if (serviceData === false) {
                 return res.status(401).json({result: "Unauthorized. Invalid credentials"});
@@ -85,13 +88,14 @@ oauthRouter.post("/token", apiKeyBearerMiddleware, async (req: Request, res: Res
 
             var token: TokenResponse = {
                 user_id: serviceData,
-                user_type: UserType.CLIENT, // TODO userData.type
+                user_type: userData ? userData.type : "",
                 access_token: generateAccessToken(serviceData),
                 expires_in: 1800,
                 refresh_token: generateRefreshToken(serviceData)
             };
-
-            await LogsService.createConnectionLog(); // TODO
+            if (userData) {
+                await LogsService.createConnectionLog(userData.id);
+            }
             return res.status(200).json(token);
         }
         else if (req.body.grant_type == "refresh_token") {
@@ -122,7 +126,7 @@ oauthRouter.post("/token", apiKeyBearerMiddleware, async (req: Request, res: Res
             });
         }
         else {
-            return res.status(401).json({result: "Unauthorized. Invalid token"});
+            return res.status(401).json({result: "Unauthorized. Invalid grant_type"});
         }
     } catch (e: any) {
         res.status(500).json(e.message);

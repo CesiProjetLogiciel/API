@@ -32,10 +32,10 @@ export interface Jwt {
 }
 
 export enum UserType {
-    CLIENT = "client",
-    DELIVERYMAN = "delivery_man",
-    RESTAURANT = "restaurant",
-    THIRD_PARTY_DEV = "third_party_dev",
-    COMMERCIAL = "commercial",
-    TECHNICAL = "technical"
+    CLIENT = "Client",
+    DELIVERYMAN = "Delivery man",
+    RESTAURANT = "Restaurant",
+    THIRD_PARTY_DEV = "Third-party dev",
+    COMMERCIAL = "Commercial",
+    TECHNICAL = "Technical"
 }

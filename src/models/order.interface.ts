@@ -13,14 +13,14 @@ export interface OrderUpdate {
 
 export interface BaseOrderDelivery {
     user_id: number;
-    delivery_address: string;
+    delivery_address: number;
+    billing_address: number;
     restaurant_id: number;
 }
 
 export interface BaseOrder extends BaseOrderDelivery {
     price: number;
     product_ids: number[];
-    menu_ids: number[];
 }
 
 export interface PostOrder extends BaseOrder {
@@ -38,4 +38,11 @@ export interface Order extends BaseOrder, OrderUpdate {
 export interface Delivery extends BaseOrderDelivery, OrderUpdate {
     id: number;
     restaurant_address: string;
+}
+
+export enum OrderStatus {
+    PENDING = 1,
+    PREPARING = 2,
+    IN_DELIVERY = 3,
+    DELIVERED = 4
 }

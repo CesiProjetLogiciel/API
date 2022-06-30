@@ -6,7 +6,8 @@ export interface PostRestaurant {
 }
 
 export interface Restaurant extends PostRestaurant {
-    id: number;
+    id: string;
+    idSQL: number;
 }
 
 export interface PutRestaurant {

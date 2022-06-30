@@ -20,10 +20,11 @@ export const statsRouter = express.Router();
 
 statsRouter.get("/sales", async (req: Request, res: Response) => {
     try {
-        // TODO
         var serviceData: any = await StatsService.readSalesStats();
-  
-        res.status(200).json(serviceData);
+        var stats: any = {
+            data: serviceData.stats
+        }
+        res.status(200).json(stats);
     } catch (e: any) {
         res.status(500).json(e.message);
     }
@@ -31,10 +32,11 @@ statsRouter.get("/sales", async (req: Request, res: Response) => {
 
 statsRouter.get("/performance", async (req: Request, res: Response) => {
     try {
-        // TODO
         var serviceData: any = await StatsService.readPerformanceStats();
-
-        res.status(200).json(serviceData);
+        var stats: any = {
+            data: serviceData.stats
+        }
+        res.status(200).json(stats);
     } catch (e: any) {
         res.status(500).json(e.message);
     }

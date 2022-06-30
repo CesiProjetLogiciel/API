@@ -4,4 +4,5 @@ export interface BasePaypal {
 
 export interface UserPaypal extends BasePaypal {
     user_id: number;
+    paypal_id: number;
 }

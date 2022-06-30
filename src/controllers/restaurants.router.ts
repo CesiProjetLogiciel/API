@@ -50,7 +50,7 @@ restaurantsRouter.get("/", async (req: Request, res: Response) => {
 // GET items/:id
 
 restaurantsRouter.get("/:id", async (req: Request, res: Response) => {
-    const id: number = parseInt(req.params.id, 10);
+    const id: string = req.params.id;
   
     try {
         var serviceData: Restaurant|null = await RestaurantsService.readRestaurant(id);
@@ -70,8 +70,7 @@ restaurantsRouter.get("/:id", async (req: Request, res: Response) => {
 restaurantsRouter.post("/", async (req: Request, res: Response) => {
     try {
         var restaurant: PostRestaurant = req.body;
-  
-        var serviceData: true|null = await RestaurantsService.createRestaurant(restaurant);
+        var serviceData: true|null = await RestaurantsService.createRestaurant(req.author_id, restaurant);
   
         res.status(201).json({result: "Created"});
     } catch (e: any) {
@@ -82,7 +81,7 @@ restaurantsRouter.post("/", async (req: Request, res: Response) => {
 // PUT items/:id
 
 restaurantsRouter.put("/:id", async (req: Request, res: Response) => {
-    const id: number = parseInt(req.params.id, 10);
+    const id: string = req.params.id;
   
     try {
         var changes: PutRestaurant = req.body;
@@ -102,7 +101,7 @@ restaurantsRouter.put("/:id", async (req: Request, res: Response) => {
 // DELETE items/:id
 
 restaurantsRouter.delete("/:id", async (req: Request, res: Response) => {
-    const id: number = parseInt(req.params.id, 10);
+    const id: string = req.params.id;
 
     try {
         var serviceData: true|null = await RestaurantsService.deleteRestaurant(id);
@@ -120,7 +119,7 @@ restaurantsRouter.delete("/:id", async (req: Request, res: Response) => {
  // GET Restaurant stats
 
  restaurantsRouter.get("/:id/stats", async (req: Request, res: Response) => {
-    const id: number = parseInt(req.params.id, 10);
+    const id: string = req.params.id;
   
     try {
         // TODO

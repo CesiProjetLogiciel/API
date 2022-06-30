@@ -10,24 +10,48 @@ import { PostRestaurant, PutRestaurant, Restaurant } from "../models/restaurant.
 * Service Methods
 */
 
-export const createNotification = async function (): Promise<true|null> {
-    // TODO axios
+export const createNotificationUser = async function (phone_number: string, content: string): Promise<true|null> {
+    console.log("before")
+    try {
+        var response = await axios({
+            method: "post",
+            url: `${process.env.SERVICES_URL}:${process.env.NOTIFICATION_SERVICE_PORT}/notifications/users`,
+            data: {
+                phonenumber: phone_number,
+                body: content
+            }
+        });
+    } catch(e: any) {
+        console.log(e.response.data.message)
+        return null;
+    }
+    
 
     return true;
 }
 
-export const readNotificationList = async function (): Promise<Array<any>> {
-    // TODO axios
-    const items = [{test: ""}]
+export const createNotificationRestaurant = async function (phone_number: string, content: string): Promise<true|null> {
+    var response = await axios({
+        method: "post",
+        url: `${process.env.SERVICES_URL}:${process.env.NOTIFICATION_SERVICE_PORT}/notifications/restaurant`,
+        data: {
+            phonenumber: phone_number,
+            body: content
+        }
+    });
 
-    return items;
+    return true;
 }
 
-export const deleteNotification = async function (id: number): Promise<true|null> {
-    // TODO axios
+export const createNotificationDeliveryman = async function (phone_number: string, content: string): Promise<true|null> {
+    var response = await axios({
+        method: "post",
+        url: `${process.env.SERVICES_URL}:${process.env.NOTIFICATION_SERVICE_PORT}/notifications/deliveryman`,
+        data: {
+            phonenumber: phone_number,
+            body: content
+        }
+    });
 
-    if (!id) {
-        return null;
-    }
     return true;
 }

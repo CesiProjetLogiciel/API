@@ -2,7 +2,7 @@
  * Required External Modules and Interfaces
  */
 
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 
 import { paypalRouter } from "./paypal.router";
 import { addressesRouter } from "./addresses.router";
@@ -27,7 +27,6 @@ usersRouter.use("/", billingsRouter);
 // GET users/:user_id
 
 usersRouter.get("/:id", async (req: Request, res: Response) => {
-    //console.log(req.author_id);
     const id: number = parseInt(req.params.id, 10);
 
     try {

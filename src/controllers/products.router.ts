@@ -22,7 +22,7 @@ export const productsRouter = express.Router();
 // GET :restaurant_id/products
 
 productsRouter.get("/:id/products", async (req: Request, res: Response) => {
-    const id: number = parseInt(req.params.id, 10);
+    const id: string = req.params.id;
 
     try {
         var serviceData: Array<Product>|null = await ProductsService.readProductList(id);
@@ -50,8 +50,8 @@ productsRouter.get("/:id/products", async (req: Request, res: Response) => {
 // GET :restaurant_id/products/:product_id
 
 productsRouter.get("/:restaurant_id/products/:product_id", async (req: Request, res: Response) => {
-    const restaurant_id: number = parseInt(req.params.restaurant_id, 10);
-    const product_id: number = parseInt(req.params.product_id, 10);
+    const restaurant_id: string = req.params.restaurant_id;
+    const product_id: string = req.params.product_id;
   
     try {
         var serviceData: Product|null = await ProductsService.readProduct(restaurant_id, product_id);
@@ -69,7 +69,7 @@ productsRouter.get("/:restaurant_id/products/:product_id", async (req: Request, 
 // POST :restaurant_id/products
 
 productsRouter.post("/:id/products", async (req: Request, res: Response) => {
-    const id: number = parseInt(req.params.id, 10);
+    const id: string = req.params.id;
 
     try {
         var product: BaseProduct = req.body;
@@ -89,8 +89,8 @@ productsRouter.post("/:id/products", async (req: Request, res: Response) => {
 // PUT :restaurant_id/products/:product_id
 
 productsRouter.put("/:restaurant_id/products/:product_id", async (req: Request, res: Response) => {
-    const restaurant_id: number = parseInt(req.params.restaurant_id, 10);
-    const product_id: number = parseInt(req.params.product_id, 10);
+    const restaurant_id: string = req.params.restaurant_id;
+    const product_id: string = req.params.product_id;
   
     try {
         var changes: PutProduct = req.body;
@@ -110,8 +110,8 @@ productsRouter.put("/:restaurant_id/products/:product_id", async (req: Request, 
 // DELETE :restaurant_id/products/:product_id
 
 productsRouter.delete("/:restaurant_id/products/:product_id", async (req: Request, res: Response) => {
-    const restaurant_id: number = parseInt(req.params.restaurant_id, 10);
-    const product_id: number = parseInt(req.params.product_id, 10);
+    const restaurant_id: string = req.params.restaurant_id;
+    const product_id: string = req.params.product_id;
 
     try {
         var serviceData: true|null = await ProductsService.deleteProduct(restaurant_id, product_id);

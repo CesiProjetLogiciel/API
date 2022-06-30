@@ -10,32 +10,35 @@ import { PostRestaurant, PutRestaurant, Restaurant } from "../models/restaurant.
 * Service Methods
 */
 
-export const readRestaurantStats = async function (id: number): Promise<any|null> {
-    // TODO axios
-    var stats = {
-        stats: "todo"
-    }
+export const readRestaurantStats = async function (id: string): Promise<any|null> {
+    var response = await axios({
+        method: "get",
+        url: `${process.env.SERVICES_URL}:${process.env.STATS_SERVICE_PORT}/stats/restaurants`,
+    });
 
-    if (!id) {
-        return null;
-    }
-    return stats;
+    // if (!id) {
+    //     return null;
+    // }
+    console.log(response.data)
+    return response.data;
 }
 
 export const readSalesStats = async function (): Promise<any> {
-    // TODO axios
-    var stats = {
-        stats: "todo"
-    }
+    var response = await axios({
+        method: "get",
+        url: `${process.env.SERVICES_URL}:${process.env.STATS_SERVICE_PORT}/stats/sales`,
+    });
 
-    return stats;
+    console.log(response.data)
+    return response.data;
 }
 
 export const readPerformanceStats = async function (): Promise<any> {
-    // TODO axios
-    var stats = {
-        stats: "todo"
-    }
+    var response = await axios({
+        method: "get",
+        url: `${process.env.SERVICES_URL}:${process.env.STATS_SERVICE_PORT}/stats/performances`,
+    });
 
-    return stats;
+    console.log(response.data)
+    return response.data;
 }

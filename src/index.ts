@@ -9,6 +9,7 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import log from "morgan";
 import passport from "passport";
+import bodyParser from "body-parser";
 
 import { routes } from "./routes";
 import { errorHandler } from "./middlewares/error.middleware";
@@ -35,11 +36,14 @@ const app = express();
 
 app.use(helmet());
 app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.text({ type: 'application/json' }));
 app.use(express.json());
 app.use(passport.initialize({userProperty:'author_id'}));
 
+
 // parse application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(log("tiny"));
