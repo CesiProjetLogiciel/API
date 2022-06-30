@@ -43,6 +43,7 @@ export interface Delivery extends BaseOrderDelivery, OrderUpdate {
 }
 
 export enum OrderStatus {
+    REFUSED = 0,
     PENDING = 1,
     PREPARING = 2,
     IN_DELIVERY = 3,
