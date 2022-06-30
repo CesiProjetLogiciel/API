@@ -38,11 +38,8 @@ export const readOrderList = async function (): Promise<Array<Order>> {
         method: "get",
         url: `${process.env.SERVICES_URL}:${process.env.ORDER_SERVICE_PORT}/orders`
     });
-    console.log(response.data)
     var getOrders = async function (order: any) {  
         const restaurant_id = order.Restaurant.ObjectId;
-        console.log("ORDER")
-        console.log(order.Products)
         var products: Array<any> = await Promise.all( order.Products.map(
             async function (product_id: string) {
                 var product: any = await ProductsService.readProduct(restaurant_id, product_id);
@@ -74,7 +71,6 @@ export const readOrderList = async function (): Promise<Array<Order>> {
             }
         ) );
         var deliveryman = await UsersService.readUser(order.DeliveryMan);
-        console.log(deliveryman)
         return {
             id: order._id,
             user_id: order.Client,
