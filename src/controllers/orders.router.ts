@@ -95,6 +95,8 @@ ordersRouter.put("/:id", async (req: Request, res: Response) => {
   
     try {
         var changes: OrderUpdate = req.body;
+        console.log('----------------------')
+        console.log(req.body)
   
         var serviceData: true|null = await OrdersService.updateOrder(id, changes);
 

@@ -7,6 +7,7 @@ import express, { Request, Response } from "express";
 import { PagedList } from "../models/paged_list.interface";
 import { Delivery } from "../models/order.interface";
 import * as DeliveriesService from "../services/deliveries.service";
+import * as AddressService from "../services/addresses.service"
 
 /**
  * Router Definition

@@ -139,6 +139,7 @@ export const updateOrder = async function (id: string, changes: OrderUpdate): Pr
     var body: any = {};
     if (changes.deliveryman_id) body.DeliveryMan = changes.deliveryman_id;
     if (changes.status) body.Status = changes.status;
+    console.log(body)
     var response = await axios({
         method: "put",
         url: `${process.env.SERVICES_URL}:${process.env.ORDER_SERVICE_PORT}/orders/${id}`,
